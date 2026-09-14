@@ -1,0 +1,225 @@
+{
+  "pyav": "18.1.0",
+  "ffmpeg_versions": {
+    "libavutil": [
+      60,
+      26,
+      100
+    ],
+    "libavcodec": [
+      62,
+      28,
+      100
+    ],
+    "libavformat": [
+      62,
+      12,
+      100
+    ],
+    "libavdevice": [
+      62,
+      3,
+      100
+    ],
+    "libavfilter": [
+      11,
+      14,
+      100
+    ],
+    "libswscale": [
+      9,
+      5,
+      100
+    ],
+    "libswresample": [
+      6,
+      3,
+      100
+    ]
+  },
+  "license": "LGPL version 2.1 or later",
+  "configuration": "--prefix=/c/build/XtraTrax-Audio-Only/prefix --target-os=mingw32 --arch=x86_64 --cc=x86_64-w64-mingw32-clang --cxx=x86_64-w64-mingw32-clang++ --ar=llvm-ar --ranlib=llvm-ranlib --nm=llvm-nm --strip=llvm-strip --enable-shared --disable-static --disable-autodetect --disable-gpl --disable-nonfree --disable-version3 --disable-network --disable-programs --disable-doc --disable-debug --disable-x86asm --disable-everything --enable-protocol=file --enable-demuxer='wav,flac,mp3,mov,ogg,aac' --enable-parser='aac,aac_latm,flac,mpegaudio,opus,vorbis' --enable-decoder='aac,aac_fixed,aac_latm,alac,flac,mp3,mp3float,mp3adu,mp3adufloat,mp3on4,mp3on4float,opus,vorbis,pcm_s8,pcm_u8,pcm_s16le,pcm_s16be,pcm_s24le,pcm_s24be,pcm_s32le,pcm_s32be,pcm_f32le,pcm_f32be,pcm_f64le,pcm_f64be' --enable-filter='abuffer,abuffersink,aresample,aformat,volume,alimiter,loudnorm,anull'",
+  "codecs": [
+    "aac",
+    "aac_fixed",
+    "aac_latm",
+    "alac",
+    "flac",
+    "mp3",
+    "mp3adu",
+    "mp3adufloat",
+    "mp3float",
+    "mp3on4",
+    "mp3on4float",
+    "opus",
+    "pcm_f32be",
+    "pcm_f32le",
+    "pcm_f64be",
+    "pcm_f64le",
+    "pcm_s16be",
+    "pcm_s16le",
+    "pcm_s24be",
+    "pcm_s24le",
+    "pcm_s32be",
+    "pcm_s32le",
+    "pcm_s8",
+    "pcm_u8",
+    "vorbis"
+  ],
+  "filters": [
+    "abuffer",
+    "abuffersink",
+    "aformat",
+    "alimiter",
+    "anull",
+    "aresample",
+    "buffer",
+    "buffersink",
+    "loudnorm",
+    "volume"
+  ],
+  "total_dll_bytes": 4135424,
+  "dlls": [
+    {
+      "name": "avcodec-62-60f825838382ab9467e03d1332b3c43a.dll",
+      "size": 1103360,
+      "sha256": "7bcc73d8ba65aeb64c54dc8045dfbb293b8401ef16f6541278d5a7d2ee31001d",
+      "imports": [
+        "swresample-6-80c297da40aa47aa665ca8de8c0aa0a1.dll",
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "avdevice-62-ccf1c81bf8ba330eb1b53774d8e5aba3.dll",
+      "size": 16384,
+      "sha256": "776a35d30132a0d7aff8833bd5328c0bfbe3274ab23c7fd308b66ba981df5f56",
+      "imports": [
+        "avformat-62-7fdc59d7923fe56dbb78d454696743f7.dll",
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "avfilter-11-e9a43e9d490ed71967adf27c201d3afd.dll",
+      "size": 218624,
+      "sha256": "f97901896215011562f50f4da761ec7713077afcc39495076757d2d2037aaa2c",
+      "imports": [
+        "swresample-6-80c297da40aa47aa665ca8de8c0aa0a1.dll",
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "avformat-62-7fdc59d7923fe56dbb78d454696743f7.dll",
+      "size": 509952,
+      "sha256": "51592d3547376991f723529e9c2ee4cace4eb899decd504c91937d7a177b32ca",
+      "imports": [
+        "avcodec-62-60f825838382ab9467e03d1332b3c43a.dll",
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+      "size": 716800,
+      "sha256": "4757803a848b4f0b1d28c40b4465a0e5652c0c1b050f00f6d1d2974670bca4ca",
+      "imports": [
+        "bcrypt.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "swresample-6-80c297da40aa47aa665ca8de8c0aa0a1.dll",
+      "size": 114176,
+      "sha256": "d9967717dcca6b2a01b9a7b8277cf20a6c228a4792fb94d72105e476b8b166c6",
+      "imports": [
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll"
+      ]
+    },
+    {
+      "name": "swscale-9-185e6b1ea1623fcdafedc3677c688853.dll",
+      "size": 1456128,
+      "sha256": "e79473099ceba76b47611cf65bb56d1919482b94e773701d81437bf3af5966a3",
+      "imports": [
+        "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-private-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "KERNEL32.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll"
+      ]
+    }
+  ],
+  "ffmpeg_commit": "9047fa1b084f76b1b4d065af2d743df1b40dfb56",
+  "pyav_commit": "7e3d950a8b72062502c1a60d672f8ca565313af5",
+  "source_files": {
+    "build-ffmpeg.sh": "43c9b70037564f3e070d7f8bf2ac0c98878c8c2e082249ad14f4f7cd6bd34fb8",
+    "build-pyav.py": "26caba870d855751924c9dea443d663ace019c8611cc4a42d39325f11ae320dd",
+    "ffmpeg-9047fa1b084f76b1b4d065af2d743df1b40dfb56.tar.gz": "c2db5efee8d35cb6df76e406d44e0a8f58a8be708a416817688fc88a17a9dbab",
+    "ffmpeg-config.mak": "8a7bb9d10c6d11cf407415872ba4bf05244e7cf22c4bf11229191286d101941b",
+    "FFmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+    "pyav-7e3d950a8b72062502c1a60d672f8ca565313af5.tar.gz": "1ff94c8758da7cbed6256d723665fb2e266e9d4460d1e6914c0c16bcdcfca0ed",
+    "PyAV-LICENSE.txt": "76af0461ffb92e19f1c14449e95557d83a2dfaa1baf202d49e5f1d8746c0da19",
+    "wheel-repair.log": "23e4fd46f6b6a9cc4f7e62801fbb4e71ce891761d4bed88fea9ff9c1eefe2576"
+  },
+  "release_note": "Build configuration paths are neutral examples. Pre-repair DLL hashes describe original inputs; sanitized release wheel/DLL hashes are in vendor/audio-runtime.json."
+}

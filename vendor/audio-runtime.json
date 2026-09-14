@@ -1,0 +1,18 @@
+{
+  "wheel": "av-18.1.0-cp311-abi3-win_amd64.whl",
+  "wheel_sha256": "a6067f515f1359af89c419d647829f77aaedecec7c21bc364c5d8ea7c3382f0c",
+  "dlls": {
+    "avcodec-62-60f825838382ab9467e03d1332b3c43a.dll": "8fb8fab1b8462ed52381568325252f01ebaa45c7bbda59011849e1c0a7e60206",
+    "avdevice-62-ccf1c81bf8ba330eb1b53774d8e5aba3.dll": "dd1fd27628d30bed214994617efe5c4b8ae1276bfad84be022fa1542c8393947",
+    "avfilter-11-e9a43e9d490ed71967adf27c201d3afd.dll": "203154132ba8e0ad0a2925de40623326f904f4f1b29bb238070edd4ed9ae671d",
+    "avformat-62-7fdc59d7923fe56dbb78d454696743f7.dll": "d014e45507959cb3d9340489b9c662ed0d3d76c7067296c20cccd6ccb61ab12b",
+    "avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll": "decb7f537253181b80f6ee3c4d9057ed2a042ca43f5743b34d2af91ca926ae1e",
+    "swresample-6-80c297da40aa47aa665ca8de8c0aa0a1.dll": "6d6b9e8b137d5838608e7ca4892ccb17d4a0fb34056dd4c0722bc8a0db5bd977",
+    "swscale-9-185e6b1ea1623fcdafedc3677c688853.dll": "145b5004c7399d22f22527dd9c5bf4ac0a82a85513ae3397544ed3189e179cfc"
+  },
+  "soundfile": {
+    "wheel": "soundfile-0.14.0-py2.py3-none-win_amd64.whl",
+    "wheel_sha256": "c2ff0adbde5c873cb11b5884ac82ac74783fa10519275f58a0a342c7a0ed3e62",
+    "dll_sha256": "5effcc7d1f394b1aee008af453ca77494ca6de2eeefb7b25ba270ef1f47b4c90"
+  }
+}

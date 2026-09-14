@@ -1,0 +1,27 @@
+[
+  {
+    "wheel": "av-18.1.0-cp311-abi3-win_amd64.whl",
+    "previous_sha256": "294465b48e000df004452eceec9c42b76e3d60525207bf5ab896f6a14565a947",
+    "sha256": "a6067f515f1359af89c419d647829f77aaedecec7c21bc364c5d8ea7c3382f0c",
+    "changed_members": [
+      "av.libs/avcodec-62-60f825838382ab9467e03d1332b3c43a.dll",
+      "av.libs/avdevice-62-ccf1c81bf8ba330eb1b53774d8e5aba3.dll",
+      "av.libs/avfilter-11-e9a43e9d490ed71967adf27c201d3afd.dll",
+      "av.libs/avformat-62-7fdc59d7923fe56dbb78d454696743f7.dll",
+      "av.libs/avutil-60-4757803a848b4f0b1d28c40b4465a0e5.dll",
+      "av.libs/swresample-6-80c297da40aa47aa665ca8de8c0aa0a1.dll",
+      "av.libs/swscale-9-185e6b1ea1623fcdafedc3677c688853.dll",
+      "av-18.1.0.dist-info/DELVEWHEEL"
+    ],
+    "executable_sections_unchanged": true
+  },
+  {
+    "wheel": "soundfile-0.14.0-py2.py3-none-win_amd64.whl",
+    "previous_sha256": "672ffff094138278747faab2a5464ecc64a9c3bc0b35cc1711cf6863fb960808",
+    "sha256": "c2ff0adbde5c873cb11b5884ac82ac74783fa10519275f58a0a342c7a0ed3e62",
+    "changed_members": [
+      "_soundfile_data/libsndfile_x64.dll"
+    ],
+    "executable_sections_unchanged": true
+  }
+]

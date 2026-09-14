@@ -1,0 +1,5 @@
+numpy==2.5.2
+./vendor/soundfile-0.14.0-py2.py3-none-win_amd64.whl
+pyinstaller==6.22.2
+./vendor/av-18.1.0-cp311-abi3-win_amd64.whl
+pefile==2024.8.26

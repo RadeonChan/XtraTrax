@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+work/
+test-output/
+dist*/
+freeze-work*/
+*.spec
+.pytest_cache/
+NativeTraxBackup*/
+*.log
+!dependency-source/wheel-repair.log

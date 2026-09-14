@@ -1,0 +1,70 @@
+{
+  "sources": [
+    {
+      "project": "libsndfile",
+      "tag": "1.2.2",
+      "commit": "72f6af15e8f85157bd622ed45b979025828b7001",
+      "archive": "libsndfile-72f6af15e8f85157bd622ed45b979025828b7001.tar.gz",
+      "sha256": "12bc92d13bff1dde517897b0ed6cf2bb346dd66a10584dcb0ccca77da306b1e0"
+    },
+    {
+      "project": "ogg",
+      "tag": "v1.3.5",
+      "commit": "e1774cd77f471443541596e09078e78fdc342e4f",
+      "archive": "ogg-e1774cd77f471443541596e09078e78fdc342e4f.tar.gz",
+      "sha256": "f1b02b9ea526f08bc8837370326b739b44126804830213697d1729de62525182"
+    },
+    {
+      "project": "flac",
+      "tag": "1.4.3",
+      "commit": "28e4f0528c76b296c561e922ba67d43751990599",
+      "archive": "flac-28e4f0528c76b296c561e922ba67d43751990599.tar.gz",
+      "sha256": "980e27cdba3d1ebf9b8b73a8bb5e42cc56b4b40a30ede711dc0e321c9a614cdc"
+    },
+    {
+      "project": "vorbis",
+      "tag": "v1.3.7",
+      "commit": "0657aee69dec8508a0011f47f3b69d7538e9d262",
+      "archive": "vorbis-0657aee69dec8508a0011f47f3b69d7538e9d262.tar.gz",
+      "sha256": "38f336c8afd43990b54cd9969aa04dc2255081c66bf8f12e9cb8e22c0a9d79c9"
+    },
+    {
+      "project": "opus",
+      "tag": "v1.5.2",
+      "commit": "ddbe48383984d56acd9e1ab6a090c54ca6b735a6",
+      "archive": "opus-ddbe48383984d56acd9e1ab6a090c54ca6b735a6.tar.gz",
+      "sha256": "cbcfd63aebde89497ad6d48bd03fe8eb9ce42942fabd160f55ed9be65f08648b"
+    },
+    {
+      "project": "python-soundfile",
+      "tag": "0.14.0",
+      "commit": "3162358d0315be769b97f3e4c12545fe18a676bc",
+      "archive": "python-soundfile-3162358d0315be769b97f3e4c12545fe18a676bc.tar.gz",
+      "sha256": "32dc8b7693851de4a096ea7e8f47aa0a0eddf788ecef0c11e5bc0bbcd2be54bd"
+    }
+  ],
+  "dll_sha256": "5effcc7d1f394b1aee008af453ca77494ca6de2eeefb7b25ba270ef1f47b4c90",
+  "dll_bytes": 2618880,
+  "imports": [
+    "KERNEL32.dll",
+    "api-ms-win-crt-stdio-l1-1-0.dll",
+    "api-ms-win-crt-runtime-l1-1-0.dll",
+    "api-ms-win-crt-string-l1-1-0.dll",
+    "api-ms-win-crt-time-l1-1-0.dll",
+    "api-ms-win-crt-heap-l1-1-0.dll",
+    "api-ms-win-crt-math-l1-1-0.dll",
+    "api-ms-win-crt-environment-l1-1-0.dll",
+    "api-ms-win-crt-private-l1-1-0.dll",
+    "api-ms-win-crt-filesystem-l1-1-0.dll",
+    "api-ms-win-crt-convert-l1-1-0.dll",
+    "api-ms-win-crt-utility-l1-1-0.dll",
+    "api-ms-win-crt-locale-l1-1-0.dll"
+  ],
+  "build_tools": {
+    "cmake": "4.4.3",
+    "ninja": "1.13.2",
+    "setuptools": "84.0.0",
+    "wheel": "0.48.0"
+  },
+  "notes": "libsndfile dynamically loaded; Xiph libraries statically linked from the pinned sources. MPEG disabled. SoundFile Python code unchanged; wheel build replaces binary payload and dependency notices. Release diagnostic path prefixes sanitized; executable sections unchanged."
+}

@@ -1,0 +1,7 @@
+repairing pyav/dist/av-18.1.0-cp311-abi3-win_amd64.whl
+finding DLL dependencies
+copying DLLs into av.libs
+mangling DLL names
+patching av\__init__.py
+repackaging wheel
+fixed wheel written to C:\build\XtraTrax-Audio-Only\wheels\av-18.1.0-cp311-abi3-win_amd64.whl

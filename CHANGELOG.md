@@ -1,5 +1,10 @@
 # Patch notes
 
+## 0.3.11
+
+- Fixed an archive-size overflow when preparing very long playlists.
+- Stop oversized playlists earlier and explain how to reduce them.
+
 ## 0.3.10
 
 - Replaced the bundled demonstration WAV with a smaller 320 kbps MP3.

@@ -40,14 +40,16 @@ def build(game,tracks,output,progress,*,wide_banners=False):
  output.parent.mkdir(parents=True,exist_ok=True)
  with tempfile.TemporaryDirectory(prefix='native-trax-lgu-',dir=output.parent) as tmp:
   temp=Path(tmp);records=[]
+  minimum_size=(game/'PFDATA/MusicSFx.mus').stat().st_size
   for i,t in enumerate(tracks):
    progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(p.encode(t,temp/f'{i}.asf'))
+   minimum_size+=(temp/f'{i}.asf').stat().st_size;p.check_soundtrack_size(minimum_size)
   p.check(len({r['key'] for r in records})==len(records),'Duplicate audio in the queue. Keep one copy so preferences remain unambiguous.')
   source=game/'PFDATA/MusicSFx.mus'
   # LGU offsets are not physically ordered. Duplicate final original sample beside
   # additions so the native adjacent-offset buffer estimate stays bounded.
   mus=p.expand_music((game/'PFDATA/MusicSFx.mpf').read_bytes(),source,0,source.stat().st_size,records,temp,relocate_last=True)
-  p.check(mus.stat().st_size<0x80000000,'Expanded audio exceeds this alpha’s 2 GiB limit.')
+  p.check_soundtrack_size(mus.stat().st_size)
   stage=temp/'result';(stage/'PFDATA').mkdir(parents=True);(stage/'SCRIPTS').mkdir()
   for n in ['MusicSFx.mpf','MusicSFx.mus']:shutil.move(str(temp/n),str(stage/'PFDATA'/n))
   progress('Verifying loose audio and preparing its plugin…')

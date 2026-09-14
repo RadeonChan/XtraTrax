@@ -2,7 +2,7 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import os,json,tempfile,uuid,traceback,functools,hashlib
-VERSION='0.3.10'
+VERSION='0.3.11'
 
 def file_state(path, *, digest=False):
  p=Path(path);result={'path':str(p)}

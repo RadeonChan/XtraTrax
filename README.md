@@ -6,7 +6,7 @@ Add your own music to **Need for Speed Underground 2**, alongside the original s
 
 **Requires 64-bit Windows. No Python installation is needed.**
 
-Download **XtraTrax-0.3.10.zip** to run the app. The separate source ZIP is for developers.
+Download **XtraTrax-0.3.11.zip** to run the app. The separate source ZIP is for developers.
 
 Use the ready-to-run XtraTrax download from NFSMODS. GitHub's **Code > Download ZIP** contains source code, not the app.
 
@@ -24,7 +24,7 @@ Supported game versions: **US 1.2, LGU, and MagiPack v5**. XtraTrax checks your 
 4. Click **Add Songs** and choose your music.
 5. Click **Apply Patch**. Wait for the success message, then start the game.
 
-Use **MP3, WAV, FLAC, M4A, or Ogg** files. You can add up to **100 songs**.
+Use **MP3, WAV, FLAC, M4A, or Ogg** files. You can add up to **100 songs**, depending on their length. Very long playlists may not fit; smaller MP3 files do not reduce the space needed inside the game.
 
 Leave the optional checkboxes off to start. Volume matching takes longer and may change how your songs sound.
 

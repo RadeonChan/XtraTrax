@@ -70,8 +70,8 @@ libogg 1.3.5, FLAC 1.4.3, Vorbis 1.3.7 and Opus 1.5.2. FFmpeg networking and
 unused codecs/programs are disabled; MP3 decoding uses FFmpeg rather than the
 disabled libsndfile MPEG backend. Sources, build recipes, configuration records
 and notices are in the matching source ZIP under dependency-source, vendor and
-third-party folders. Download XtraTrax-0.3.10-source.zip alongside the app at
-https://github.com/RadeonChan/XtraTrax/releases/tag/v0.3.10.
+third-party folders. Download XtraTrax-0.3.11-source.zip alongside the app at
+https://github.com/RadeonChan/XtraTrax/releases/tag/v0.3.11.
 Build records use neutral paths. Release wheels have local diagnostic/configuration
 path prefixes sanitized without changing executable sections; see
 dependency-source/sanitize_wheel.py and SANITIZATION.json.

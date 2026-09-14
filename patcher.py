@@ -10,6 +10,7 @@ import diagnostics
 
 REQUIRED_GAME_VERSION='US v1.2'
 MAX_ADDED=100
+MAX_SOUNDTRACK_BYTES=0x80000000
 EXE_SHA='f9dd86c054878ce6276beb07c1fd61874f7a1e4bf1f241b084c65b73e2'+'4168a7'
 ORIGINAL_SHA='379a3cd7c16a5090590248616042f8af3ac0c234a58dc9f58c7eee200377e3f1'
 ASSETS=Path(getattr(sys,'_MEIPASS',Path(__file__).resolve().parent))/'assets'
@@ -21,6 +22,12 @@ def sha(path):
 def check(condition,message):
  if not condition:raise ValueError(message)
 def align(n,a=4):return (n+a-1)//a*a
+
+def check_soundtrack_size(size):
+ check(size<MAX_SOUNDTRACK_BYTES,
+       'This playlist is too long to fit the supported soundtrack size. '
+       'Remove some songs or choose shorter tracks, then try again. '
+       'The limit is 2 GiB after audio conversion, including the original soundtrack.')
 def field(k,v):
  z=v.to_bytes(max(1,(v.bit_length()+7)//8),'big')
  if z[0]&128:z=b'\0'+z
@@ -120,6 +127,13 @@ def expand_music(m,stream_path,stream_offset,stream_size,records,temp,*,relocate
  no=[u16(32+i*2)*4 for i in range(162)];eo=[u16(0xd34+i*2)*4 for i in range(79)]
  nodes=[m[o:no[i+1] if i<161 else 0xd34] for i,o in enumerate(no)];events=[m[o:eo[i+1] if i<78 else 0x1954] for i,o in enumerate(eo)]
  samples=bytearray(m[0x1960:0x1ab8]);mus=temp/'MusicSFx.mus'
+ projected=stream_size
+ if relocate_last:
+  last=struct.unpack_from('<I',samples,42*8)[0]*128
+  next_offset=min(o*128 for o,t in struct.iter_unpack('<II',samples) if o*128>last)
+  projected+=next_offset-last
+ for r in records:projected=align(align(projected,128)+Path(r['stream']).stat().st_size,128)
+ check_soundtrack_size(projected)
  with Path(stream_path).open('rb') as inp,mus.open('wb') as out:
   copyrange(inp,out,stream_offset,stream_size)
   if relocate_last:
@@ -163,8 +177,10 @@ def build(game,tracks,output,progress=lambda s:None,*,wide_banners=False):
  output.parent.mkdir(parents=True,exist_ok=True)
  with tempfile.TemporaryDirectory(prefix='native-trax-',dir=output.parent) as temp:
   temp=Path(temp);records=[]
+  minimum_size=(game/'SDATA/sdat.viv').stat().st_size
   for i,t in enumerate(tracks):
    progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(encode(t,temp/f'{i}.asf'))
+   minimum_size+=(temp/f'{i}.asf').stat().st_size;check_soundtrack_size(minimum_size)
   check(len({r['key'] for r in records})==len(records),'Duplicate audio in the queue. Keep one copy so preferences remain unambiguous.')
   archive=game/'SDATA/sdat.viv';entries=directory(archive);lookup={n:(o,z) for n,o,z in entries}
   with archive.open('rb') as f:f.seek(lookup['pfdata/MusicSFx.mpf'][0]);m=f.read(lookup['pfdata/MusicSFx.mpf'][1])
@@ -172,8 +188,9 @@ def build(game,tracks,output,progress=lambda s:None,*,wide_banners=False):
   header_size=16+sum(9+len(n.encode()) for n,_,_ in entries);offset=align(header_size,64);parts=[];d=bytearray()
   for n,o,z in entries:
    replacement=mus if n.endswith('MusicSFx.mus') else temp/'MusicSFx.mpf' if n.endswith('MusicSFx.mpf') else None
-   size=replacement.stat().st_size if replacement else z;d+=struct.pack('>II',offset,size)+n.encode()+b'\0';parts.append((offset,replacement,o,size));offset=align(offset+size,64)
-  check(offset<0x80000000,'Expanded archive exceeds this alpha’s 2 GiB limit.')
+   size=replacement.stat().st_size if replacement else z
+   next_offset=align(offset+size,64);check_soundtrack_size(next_offset)
+   d+=struct.pack('>II',offset,size)+n.encode()+b'\0';parts.append((offset,replacement,o,size));offset=next_offset
   stage=temp/'result';(stage/'SDATA').mkdir(parents=True);(stage/'SCRIPTS').mkdir()
   progress('Building and hashing the local archive…')
   with archive.open('rb') as inp,(stage/'SDATA/sdat.viv').open('wb') as out:

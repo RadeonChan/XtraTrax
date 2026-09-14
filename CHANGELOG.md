@@ -7,7 +7,8 @@
 - Preserve compatible MP3 audio without re-encoding; bundle an encoder for other inputs and volume matching.
 - Group the initial compressed frames to preserve startup decoding across tested decoders.
 - Verify volume-matched peaks after MP3 encoding and reduce gain when needed.
-- This development build still requires live gameplay validation before release.
+- Add Select All, Ctrl+A selection, and a scrollbar to the song list.
+- Show blue glass-style progress during preparation and installation.
 
 ## 0.3.11
 

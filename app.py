@@ -9,6 +9,33 @@ import xt_workflow as workflow
 COPY=json.loads((patcher.ASSETS/"ui-copy.json").read_text(encoding="utf-8"))
 def ui(n):return COPY[f"{n:03d}"]
 
+class GlassProgress(tk.Canvas):
+ """Draw a blue glass highlight independently of the Windows widget theme."""
+ def __init__(self,parent):
+  super().__init__(parent,height=18,background='#202124',highlightthickness=0)
+  self.value=0;self.mode='idle';self.phase=0;self.timer=None
+  self.bind('<Configure>',lambda _:self.draw())
+  self.bind('<Destroy>',self.stop)
+ def stop(self,_=None):
+  if self.timer is not None:self.after_cancel(self.timer);self.timer=None
+ def set(self,mode,value=0):
+  self.stop();self.mode=mode;self.value=max(0,min(1,value));self.phase=0;self.draw()
+  if mode=='busy':self.tick()
+ def tick(self):
+  self.phase=(self.phase+0.025)%2;self.draw();self.timer=self.after(40,self.tick)
+ def draw(self):
+  self.delete('all');w=max(8,self.winfo_width());h=18
+  self.create_rectangle(0,0,w-1,h-1,fill='#101820',outline='#536777')
+  self.create_line(1,h-2,w-2,h-2,fill='#344650')
+  width=w-4
+  if self.mode=='busy':
+   length=max(8,width*.23);position=1-abs(1-self.phase);left=2+(width-length)*position;right=left+length
+  else:left=2;right=2+width*self.value
+  if right<=left:return
+  colors=['#c1efff','#a4e4ff','#8adaff','#70cdff','#56bfff','#3aadf5','#2095e5','#0876c9','#087dce','#1089d8','#1994e2','#25a0eb','#46b7f6','#78d5ff']
+  for y,color in enumerate(colors,2):self.create_line(left,y,right,y,fill=color)
+  self.create_line(left,2,left,15,fill='#9ce6ff');self.create_line(right,2,right,15,fill='#77cfff')
+
 def center_dialog(dialog,parent):
  # Measure the complete dialog while withdrawn so it first appears over its owner.
  dialog.update_idletasks()
@@ -74,9 +101,16 @@ def main():
   detected.set(ui(42))
   detection['timer']=window.after(300,lambda:threading.Thread(target=detect_folder,args=(path,generation),daemon=True).start())
  game.trace_add('write',folder_changed)
- listing=ttk.Treeview(frame,columns=('title','artist','album'),show='headings',selectmode='extended',height=9)
+ list_frame=ttk.Frame(frame);list_frame.pack(fill='both',expand=True,pady=10)
+ listing=ttk.Treeview(list_frame,columns=('title','artist','album'),show='headings',selectmode='extended',height=9)
  for col,n in [('title',12),('artist',13),('album',14)]:listing.heading(col,text=ui(n));listing.column(col,width=230,minwidth=100)
- listing.pack(fill='both',expand=True,pady=10)
+ scrollbar=ttk.Scrollbar(list_frame,orient='vertical',command=listing.yview)
+ listing.configure(yscrollcommand=scrollbar.set)
+ scrollbar.pack(side='right',fill='y');listing.pack(side='left',fill='both',expand=True)
+ def select_all(_=None):
+  if not state['busy']:listing.selection_set(listing.get_children())
+  return 'break'
+ listing.bind('<Control-a>',select_all);listing.bind('<Control-A>',select_all)
  def selected():return tuple(int(i) for i in listing.selection())
  def refresh():
   listing.delete(*listing.get_children())
@@ -102,7 +136,7 @@ def main():
   for i in sorted(selected(),reverse=True):tracks.pop(i)
   refresh()
  controls=ttk.Frame(frame);controls.pack(fill='x')
- for text,fn in [(ui(8),lambda:add(filedialog.askopenfilenames(filetypes=[(ui(9),'*.wav *.flac *.m4a *.mp3 *.ogg')]))),(ui(10),add_demo),(ui(11),remove)]:
+ for text,fn in [(ui(8),lambda:add(filedialog.askopenfilenames(filetypes=[(ui(9),'*.wav *.flac *.m4a *.mp3 *.ogg')]))),(ui(10),add_demo),('Select All',select_all),(ui(11),remove)]:
   b=ttk.Button(controls,text=text,command=fn);b.pack(side='left',padx=(0,8));buttons.append(b)
  for k in fields:
   r=ttk.Frame(frame);r.pack(fill='x',pady=3);ttk.Label(r,text=ui({'title':12,'artist':13,'album':14}[k]),width=8).pack(side='left');entry=ttk.Entry(r,textvariable=fields[k]);entry.pack(fill='x',expand=True);buttons.append(entry)
@@ -127,6 +161,7 @@ def main():
  def work(fn,done):
   if state['busy']:return
   state['busy']=True
+  progress_bar.set('busy')
   for b in buttons:b.state(['disabled'])
   def runner():
    try:result=fn();messages.put(('done',done,result))
@@ -149,14 +184,18 @@ def main():
   snapshot=[dict(x,normalize=normalize.get(),limiting=normalize.get()) for x in tracks];wide=wide_banners.get()
   def progress(text):
    match=__import__('re').match(r'Encoding (\d+)/(\d+): (.*)',text)
-   if match:text=ui(29).format(current=match[1],total=match[2],title=match[3])
-   messages.put(('status',text))
+   fraction=None
+   if match:
+    fraction=(int(match[1])-1)/max(1,int(match[2]))
+    text=ui(29).format(current=match[1],total=match[2],title=match[3])
+   messages.put(('status',text,fraction))
   work(lambda:workflow.apply(gamepath,snapshot,wide,progress),lambda _:status.set(ui(33)))
  def restore():
   gamepath=game.get();status.set(ui(32));work(lambda:workflow.restore(gamepath),lambda _:status.set(ui(34)))
  row=ttk.Frame(frame);row.pack(fill='x',pady=12)
  for text,fn in [(ui(19),apply),(ui(20),restore)]:
   b=ttk.Button(row,text=text,command=fn);b.pack(side='left',padx=(0,8));buttons.append(b)
+ progress_bar=GlassProgress(frame);progress_bar.pack(fill='x',pady=(0,4))
  status_label=ttk.Label(frame,textvariable=status,wraplength=790)
  def show_status(*_):
   if status.get():status_label.pack(anchor='w',pady=10)
@@ -168,11 +207,12 @@ def main():
    if item[0]=='detected':
     if item[1]==detection['generation']:detected.set(item[2])
     continue
-   if item[0]=='status':status.set(item[1]);continue
+   if item[0]=='status':
+    status.set(item[1]);progress_bar.set('busy' if item[2] is None else 'progress',item[2] or 0);continue
    state['busy']=False
    for b in buttons:b.state(['!disabled'])
-   if item[0]=='done':item[1](item[2])
-   else:status.set(ui(35).format(error=item[1]));messagebox.showerror(ui(1),item[1])
+   if item[0]=='done':progress_bar.set('progress',1);item[1](item[2])
+   else:progress_bar.set('idle');status.set(ui(35).format(error=item[1]));messagebox.showerror(ui(1),item[1])
   window.after(100,poll)
  def close():
   if state['busy']:messagebox.showinfo(ui(36),ui(37))

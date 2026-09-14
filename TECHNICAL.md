@@ -26,8 +26,10 @@ Resampling and quantization can change samples; out-of-range input can clip.
 No separate Python or converter installation is needed.
 
 Volume matching is off by default. When enabled, it uses limiting and up to four
-gain adjustments toward -9 LUFS on the prepared PCM, with measured PCM peaks
-at or below -1 dBTP before MP3 encoding. Lossy encoding can change final peaks. The
+gain adjustments toward -9 LUFS on the prepared PCM. The encoded MP3 is decoded
+and measured; if its true peak exceeds -1 dBTP, input gain is reduced and the
+track is encoded again from the prepared PCM. Failure to meet the ceiling is
+refused. Peak protection can keep final loudness below the target. The
 limiter uses 192 kHz oversampling, 5 ms lookahead/attack, 50 ms release, latency
 compensation and no automatic makeup gain. This is a product setting, not a
 recovered engine constant. It can change dynamics and cause pumping; the target

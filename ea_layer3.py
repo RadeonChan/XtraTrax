@@ -1,6 +1,7 @@
 """Repack MPEG1 Layer3 coefficients into bounded EA SCHl packets."""
 from pathlib import Path
 import struct
+from itertools import chain
 
 class Unsupported(ValueError):pass
 class Bits:
@@ -74,13 +75,21 @@ def block(tag,b):
 def write(path,dest,samples):
  if not 0<samples<=44100*60*30:raise ValueError('Track must be between one sample and 30 minutes.')
  count=0;remaining=samples
+ packets=iter(frames(path));initial=[]
+ for _ in range(2):
+  try:initial.append(next(packets))
+  except StopIteration:break
+ groups=chain([initial] if initial else [],([p] for p in packets))
  with Path(dest).open('wb') as f:
-  for rate,ch,payload in frames(path):
+  for group in groups:
+   rate,ch,_=group[0];payload=b''.join(p[2] for p in group)
    if (rate,ch)!=(44100,2):raise Unsupported('Direct repacking requires 44.1 kHz stereo.')
    if count==0:
     header=b'PT\0\0'+bytes.fromhex('06 01 65 0b 01 02 fd')+b''.join(field(k,v) for k,v in [(0x80,2),(0x85,samples),(0x82,ch),(0x84,rate),(0xa0,23)])+b'\xff'
     f.write(block(b'SCHl',header));count_pos=f.tell();f.write(block(b'SCCl',struct.pack('<I',0)))
-   n=min(47 if count==0 else 1152,remaining)
+   # Two initial frames let independent MPEG reconstruction establish sync.
+   # Join raw granules here; SCHl alignment padding is added only afterwards.
+   n=min(len(group)*1152-1105 if count==0 else 1152,remaining)
    if n:
     f.write(block(b'SCDl',struct.pack('<III',n,0,1)+payload));remaining-=n;count+=1
   if remaining or not count:raise ValueError('MP3 contains insufficient audio.')

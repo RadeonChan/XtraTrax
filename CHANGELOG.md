@@ -5,6 +5,8 @@
 - Corrected missing sign-bit refills in the game's EA Layer 3 decoder.
 - Store added music as compressed EA Layer 3 to reduce playlist size.
 - Preserve compatible MP3 audio without re-encoding; bundle an encoder for other inputs and volume matching.
+- Group the initial compressed frames to preserve startup decoding across tested decoders.
+- Verify volume-matched peaks after MP3 encoding and reduce gain when needed.
 - This development build still requires live gameplay validation before release.
 
 ## 0.3.11

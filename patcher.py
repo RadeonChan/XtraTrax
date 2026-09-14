@@ -50,12 +50,16 @@ def encode(track,dest):
   if track.get('normalize',False):
    with tempfile.TemporaryDirectory(prefix='XtraTrax-volume-') as tmp:
     matched=Path(tmp)/'matched.wav';report=(loudness.match_limited if track.get('limiting',False) else loudness.match)(path,matched)
-    result=encode_compressed(dict(track,path=str(matched)),dest);result['normalization']=report
+    result=encode_compressed(dict(track,path=str(matched)),dest,protect_peak=True)
+    report['prepared_output_lufs']=report['output_lufs'];report['prepared_output_true_peak_dbtp']=report['output_true_peak_dbtp']
+    report.update(result.pop('post_encoding'))
+    if 'target_reached' in report:report['target_reached']=report['output_lufs'] is not None and abs(report['output_lufs']-loudness.TARGET_LUFS)<=.25
+    result['normalization']=report
     return result
   direct=track['path'] if Path(track['path']).suffix.lower()=='.mp3' and ea_layer3.direct_compatible(track['path']) else None
   return encode_compressed(dict(track,path=str(path)),dest,direct_mp3=direct)
 
-def encode_compressed(track,dest,*,direct_mp3=None):
+def encode_compressed(track,dest,*,direct_mp3=None,protect_peak=False):
  path=Path(track['path']);info=sf.info(str(path));h=hashlib.sha256()
  for k in ['title','artist','album']:text_bytes(track[k])
  check(track['title'].strip(),'Title cannot be blank.')
@@ -66,9 +70,14 @@ def encode_compressed(track,dest,*,direct_mp3=None):
  check(total==info.frames,'Input changed during encoding.')
  with tempfile.TemporaryDirectory(prefix='XtraTrax-mp3-') as tmp:
   mp3=Path(direct_mp3) if direct_mp3 else Path(tmp)/'encoded.mp3'
-  if not direct_mp3:check(mp3_encoder.encode(path,mp3)==total,'Input changed during encoding.')
+  post=None
+  if protect_peak:
+   encoded,post=mp3_encoder.encode_protected(path,mp3);check(encoded==total,'Input changed during encoding.')
+  elif not direct_mp3:check(mp3_encoder.encode(path,mp3)==total,'Input changed during encoding.')
   ea_layer3.write(mp3,dest,total)
- return dict(title=track['title'],artist=track['artist'],album=track['album'],frames=total,key=h.hexdigest(),stream=str(dest))
+ result=dict(title=track['title'],artist=track['artist'],album=track['album'],frames=total,key=h.hexdigest(),stream=str(dest))
+ if post is not None:result['post_encoding']=post
+ return result
 
 def encode_pcm(track,dest):
  path=Path(track['path']);info=sf.info(str(path))

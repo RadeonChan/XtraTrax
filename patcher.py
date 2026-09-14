@@ -7,6 +7,8 @@ import soundfile as sf
 import audio_input
 import loudness
 import diagnostics
+import ea_layer3
+import mp3_encoder
 
 REQUIRED_GAME_VERSION='US v1.2'
 MAX_ADDED=100
@@ -48,9 +50,25 @@ def encode(track,dest):
   if track.get('normalize',False):
    with tempfile.TemporaryDirectory(prefix='XtraTrax-volume-') as tmp:
     matched=Path(tmp)/'matched.wav';report=(loudness.match_limited if track.get('limiting',False) else loudness.match)(path,matched)
-    result=encode_pcm(dict(track,path=str(matched)),dest);result['normalization']=report
+    result=encode_compressed(dict(track,path=str(matched)),dest);result['normalization']=report
     return result
-  return encode_pcm(dict(track,path=str(path)),dest)
+  direct=track['path'] if Path(track['path']).suffix.lower()=='.mp3' and ea_layer3.direct_compatible(track['path']) else None
+  return encode_compressed(dict(track,path=str(path)),dest,direct_mp3=direct)
+
+def encode_compressed(track,dest,*,direct_mp3=None):
+ path=Path(track['path']);info=sf.info(str(path));h=hashlib.sha256()
+ for k in ['title','artist','album']:text_bytes(track[k])
+ check(track['title'].strip(),'Title cannot be blank.')
+ total=0
+ with sf.SoundFile(str(path)) as inp:
+  while len(pcm:=inp.read(65536,dtype='int16',always_2d=True)):
+   h.update(pcm.astype('<i2',copy=False).tobytes());total+=len(pcm)
+ check(total==info.frames,'Input changed during encoding.')
+ with tempfile.TemporaryDirectory(prefix='XtraTrax-mp3-') as tmp:
+  mp3=Path(direct_mp3) if direct_mp3 else Path(tmp)/'encoded.mp3'
+  if not direct_mp3:check(mp3_encoder.encode(path,mp3)==total,'Input changed during encoding.')
+  ea_layer3.write(mp3,dest,total)
+ return dict(title=track['title'],artist=track['artist'],album=track['album'],frames=total,key=h.hexdigest(),stream=str(dest))
 
 def encode_pcm(track,dest):
  path=Path(track['path']);info=sf.info(str(path))

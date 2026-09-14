@@ -3,7 +3,9 @@
 ## Unreleased
 
 - Corrected missing sign-bit refills in the game's EA Layer 3 decoder.
-- Compressed music import is still in development; this change alone does not increase playlist capacity.
+- Store added music as compressed EA Layer 3 to reduce playlist size.
+- Preserve compatible MP3 audio without re-encoding; bundle an encoder for other inputs and volume matching.
+- This development build still requires live gameplay validation before release.
 
 ## 0.3.11
 

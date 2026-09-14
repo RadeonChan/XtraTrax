@@ -17,13 +17,17 @@ identity or functionality. No loader or original game files are distributed.
 Supports 1-100 additions, up to 30 minutes per track and a 2 GiB output limit.
 Inputs: WAV, FLAC, MP3, M4A (AAC/ALAC), Ogg (Vorbis/Opus). Mono and stereo are
 supported; surround and multiple audio streams are refused. Damaged or protected
-files may be refused. Output is 44.1 kHz, 16-bit stereo. Mono is duplicated at
-unchanged amplitude. Matching WAV/FLAC input bypasses conversion. Compressed
-files may retain codec padding. Resampling and quantization can change samples;
-out-of-range input can clip. No separate Python or converter install is needed.
+files may be refused. Output is 44.1 kHz stereo EA Layer 3. Compatible stereo
+MP3 files with a verified 576-sample encoder-delay tag are repacked without
+another lossy encode. Other inputs use the bundled LAME encoder at 320 kbps;
+encoding is lossy. Mono is duplicated at unchanged amplitude. The output length
+matches the prepared input, with decoder startup delay and final padding removed.
+Resampling and quantization can change samples; out-of-range input can clip.
+No separate Python or converter installation is needed.
 
 Volume matching is off by default. When enabled, it uses limiting and up to four
-gain adjustments toward -9 LUFS, with verified peaks at or below -1 dBTP. The
+gain adjustments toward -9 LUFS on the prepared PCM, with measured PCM peaks
+at or below -1 dBTP before MP3 encoding. Lossy encoding can change final peaks. The
 limiter uses 192 kHz oversampling, 5 ms lookahead/attack, 50 ms release, latency
 compensation and no automatic makeup gain. This is a product setting, not a
 recovered engine constant. It can change dynamics and cause pumping; the target
@@ -44,7 +48,8 @@ condition. Both instruction sites are checked before any patches are applied,
 using the same verification and rollback mechanism as the other runtime patches.
 This changes loaded process memory, not the executable on disk. Compressed
 import remains under development; the correction alone does not change the
-current PCM output or the soundtrack size limit.
+soundtrack size limit. Compressed output substantially reduces storage compared
+with PCM, but exceptionally long playlists can still exceed that limit.
 
 Apply prepares the new soundtrack before replacing installed files. Initial
 backups are staged and verified before becoming active. Replacements save

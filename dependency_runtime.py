@@ -20,6 +20,10 @@ def verify():
     dll=Path(soundfile.__file__).resolve().parent/'_soundfile_data/libsndfile_x64.dll'
     if hashlib.sha256(dll.read_bytes()).hexdigest()!=snd['dll_sha256']:
         raise RuntimeError('This environment does not contain the verified source-built libsndfile. Install requirements.txt first.')
+    encoder=root/'assets/encoder'
+    encoder_meta=json.loads((encoder/'runtime.json').read_text())
+    if hashlib.sha256((encoder/'libmp3lame.dll').read_bytes()).hexdigest()!=encoder_meta['dll_sha256']:
+        raise RuntimeError('The bundled MP3 encoder does not match its verified hash.')
     return expected
 
 if __name__=='__main__':

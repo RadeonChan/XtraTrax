@@ -4,6 +4,18 @@
 #include <stdio.h>
 #include <string.h>
 
+/* EA Layer 3 can exhaust its bit buffer while reading an extended magnitude.
+   Fetch the following sign bit before testing it. Preserve the displaced CMP
+   flags and MOV so the original decoder continues with the correct sign. */
+__attribute__((naked)) static void layer3SignHook(void) {
+ __asm__ volatile(
+  "push %eax\n push %edx\n cmpl $0,0x34(%esi)\n jne 1f\n"
+  "mov 0x24(%esi),%eax\n movzbl (%eax),%edx\n inc %eax\n"
+  "mov %eax,0x24(%esi)\n shl $24,%edx\n mov %edx,0x30(%esi)\n"
+  "movl $8,0x34(%esi)\n"
+  "1: pop %edx\n pop %eax\n cmpl $0,0x30(%esi)\n mov 0xc(%ebp),%ecx\n ret");
+}
+
 typedef struct {const char *title,*artist,*album,*mode;} Metadata;
 typedef struct {uint32_t index; BYTE mode,pad[3];} Setting;
 #ifndef TRACK_COUNT

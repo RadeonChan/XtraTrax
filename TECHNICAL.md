@@ -37,6 +37,15 @@ can reset them. Changing metadata does not intentionally reset preferences.
 
 ## Installation and recovery
 
+The native plugin corrects two EA Layer 3 coefficient-sign reads that can
+otherwise use an exhausted bit buffer. The correction fetches the next byte
+before reading its sign bit and preserves the original registers and branch
+condition. Both instruction sites are checked before any patches are applied,
+using the same verification and rollback mechanism as the other runtime patches.
+This changes loaded process memory, not the executable on disk. Compressed
+import remains under development; the correction alone does not change the
+current PCM output or the soundtrack size limit.
+
 Apply prepares the new soundtrack before replacing installed files. Initial
 backups are staged and verified before becoming active. Replacements save
 verified recovery copies and a receipt. Write failures attempt rollback; the

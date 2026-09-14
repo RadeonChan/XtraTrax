@@ -1,5 +1,10 @@
 # Patch notes
 
+## Unreleased
+
+- Corrected missing sign-bit refills in the game's EA Layer 3 decoder.
+- Compressed music import is still in development; this change alone does not increase playlist capacity.
+
 ## 0.3.11
 
 - Fixed an archive-size overflow when preparing very long playlists.

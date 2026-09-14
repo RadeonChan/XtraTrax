@@ -1,14 +1,12 @@
 # Building the packaged source
 
-The repository includes `assets` with plugin templates, UI text, and the bundled
-demonstration track. For a packaged release, keep `Source` beside `_internal`;
-the rebuild script copies `_internal/assets` when `Source/assets` is absent.
-These assets are required for a complete build.
+The source ZIP and repository include assets, plugin templates, UI text and
+the demonstration track. Extract the entire source ZIP before building.
 
 The release audit used Windows x64, Python 3.13.5, and an isolated virtual
 environment. From this Source directory, run `python -m pip install -r requirements.txt`; this installs the supplied audio dependency wheels from `vendor`, not the public PyPI wheel. The rebuild script verifies their hashes and the installed DLLs before building.
 From `Source`, run `python rebuild.py` to copy the supplied assets and build
-`dist-0.3.9/XtraTrax/XtraTrax.exe`. This uses the shipped plugin templates.
+`dist-0.3.10/XtraTrax/XtraTrax.exe`. This uses the shipped plugin templates.
 It does not require a game installation or launch a game.
 
 The supplied `assets/XtraTrax.ico` is used for the executable and window icons.

@@ -95,8 +95,8 @@ def main():
    tracks.extend(pending);refresh()
   except Exception as e:messagebox.showerror(ui(38),str(e))
  def add_demo():
-  add([str(patcher.ASSETS/'Dead at Dawn VIP.wav')])
-  if tracks and tracks[-1]['path']==str(patcher.ASSETS/'Dead at Dawn VIP.wav'):
+  add([str(patcher.ASSETS/'Dead at Dawn.mp3')])
+  if tracks and tracks[-1]['path']==str(patcher.ASSETS/'Dead at Dawn.mp3'):
    tracks[-1].update(title=ui(22),artist=ui(23),album=ui(24));refresh()
  def remove():
   for i in sorted(selected(),reverse=True):tracks.pop(i)
@@ -188,14 +188,14 @@ def main():
 
 if __name__=='__main__':
  if '--self-test' in sys.argv:
-  result={'lgu_template':(patcher.ASSETS/'lgu/NativeTrax.template').is_file(),'assets':patcher.ASSETS.is_dir(),'template':(patcher.ASSETS/'NativeTrax.template').is_file(),'demo':patcher.inspect_audio(patcher.ASSETS/'Dead at Dawn VIP.wav').frames}
+  result={'lgu_template':(patcher.ASSETS/'lgu/NativeTrax.template').is_file(),'assets':patcher.ASSETS.is_dir(),'template':(patcher.ASSETS/'NativeTrax.template').is_file(),'demo':patcher.inspect_audio(patcher.ASSETS/'Dead at Dawn.mp3').frames}
   if len(sys.argv)>2:Path(sys.argv[2]).write_text(json.dumps(result))
   print(json.dumps(result))
  elif '--encode-audio-test' in sys.argv:
   result=patcher.encode(dict(path=sys.argv[2],title='Test',artist='',album='',normalize='--normalize' in sys.argv,limiting='--limiting' in sys.argv),sys.argv[3])
   Path(sys.argv[4]).write_text(json.dumps(result),encoding='utf-8')
  elif '--build-demo-test' in sys.argv:
-  demo=dict(path=str(patcher.ASSETS/'Dead at Dawn VIP.wav'),title=ui(22),artist=ui(23),album=ui(24))
+  demo=dict(path=str(patcher.ASSETS/'Dead at Dawn.mp3'),title=ui(22),artist=ui(23),album=ui(24))
   patcher.build(sys.argv[2],[demo],sys.argv[3])
  else:main()
 

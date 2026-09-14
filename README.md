@@ -6,6 +6,8 @@ Add your own music to **Need for Speed Underground 2**, alongside the original s
 
 **Requires 64-bit Windows. No Python installation is needed.**
 
+Download **XtraTrax-0.3.10.zip** to run the app. The separate source ZIP is for developers.
+
 Use the ready-to-run XtraTrax download from NFSMODS. GitHub's **Code > Download ZIP** contains source code, not the app.
 
 **You need an ASI loader installed in the game. XtraTrax does not include one.**

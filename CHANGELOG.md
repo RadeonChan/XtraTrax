@@ -1,5 +1,9 @@
 # Patch notes
 
+## 0.3.10
+
+- Replaced the bundled demonstration WAV with a smaller 320 kbps MP3.
+
 ## 0.3.9
 
 - Renamed the backup folder to XtraTraxBackup.

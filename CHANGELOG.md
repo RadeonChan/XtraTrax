@@ -1,19 +1,14 @@
 # Patch notes
 
-## Unreleased
-
-- Corrected missing sign-bit refills in the game's EA Layer 3 decoder.
-- Store added music as compressed EA Layer 3 to reduce playlist size.
-- Preserve compatible MP3 audio without re-encoding; bundle an encoder for other inputs and volume matching.
-- Group the initial compressed frames to preserve startup decoding across tested decoders.
-- Verify volume-matched peaks after MP3 encoding and reduce gain when needed.
-- Add Select All, Ctrl+A selection, and a scrollbar to the song list.
-- Show blue glass-style progress during preparation and installation.
-
 ## 0.3.11
 
-- Fixed an archive-size overflow when preparing very long playlists.
-- Stop oversized playlists earlier and explain how to reduce them.
+- Reduced playlist size by storing added songs as compressed audio.
+- Compatible MP3s import without another lossy encode.
+- Fixed subtle audio artifacts in compressed playback.
+- Fixed oversized-playlist errors; playlists exceeding the game's 2 GiB soundtrack limit stop before installation.
+- Added Select All, Ctrl+A, and a scrollbar to the song list.
+- Added blue glass-style progress bars for the current track and total preparation.
+- Check volume-matched audio peaks after encoding.
 
 ## 0.3.10
 

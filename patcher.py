@@ -44,22 +44,30 @@ def text_bytes(value):
 def inspect_audio(path):
  return audio_input.inspect(path)
 
-def encode(track,dest):
+def track_progress(callback):
+ # Limit queue traffic to percentage changes, even for tiny codec packets.
+ last=[-1]
+ def report(value):
+  percent=min(100,max(0,int(value*100)))
+  if percent!=last[0]:last[0]=percent;callback(f'Track progress: {percent}')
+ return report
+
+def encode(track,dest,progress=lambda value:None):
  check(type(track.get('normalize',False)) is bool,'Volume matching must be enabled or disabled.')
- with audio_input.prepared(track['path'],floating=track.get('normalize',False)) as path:
+ with audio_input.prepared(track['path'],floating=track.get('normalize',False),progress=lambda v:progress(.25*v)) as path:
   if track.get('normalize',False):
    with tempfile.TemporaryDirectory(prefix='XtraTrax-volume-') as tmp:
     matched=Path(tmp)/'matched.wav';report=(loudness.match_limited if track.get('limiting',False) else loudness.match)(path,matched)
-    result=encode_compressed(dict(track,path=str(matched)),dest,protect_peak=True)
+    result=encode_compressed(dict(track,path=str(matched)),dest,protect_peak=True,progress=progress)
     report['prepared_output_lufs']=report['output_lufs'];report['prepared_output_true_peak_dbtp']=report['output_true_peak_dbtp']
     report.update(result.pop('post_encoding'))
     if 'target_reached' in report:report['target_reached']=report['output_lufs'] is not None and abs(report['output_lufs']-loudness.TARGET_LUFS)<=.25
     result['normalization']=report
     return result
   direct=track['path'] if Path(track['path']).suffix.lower()=='.mp3' and ea_layer3.direct_compatible(track['path']) else None
-  return encode_compressed(dict(track,path=str(path)),dest,direct_mp3=direct)
+  return encode_compressed(dict(track,path=str(path)),dest,direct_mp3=direct,progress=progress)
 
-def encode_compressed(track,dest,*,direct_mp3=None,protect_peak=False):
+def encode_compressed(track,dest,*,direct_mp3=None,protect_peak=False,progress=lambda value:None):
  path=Path(track['path']);info=sf.info(str(path));h=hashlib.sha256()
  for k in ['title','artist','album']:text_bytes(track[k])
  check(track['title'].strip(),'Title cannot be blank.')
@@ -67,6 +75,7 @@ def encode_compressed(track,dest,*,direct_mp3=None,protect_peak=False):
  with sf.SoundFile(str(path)) as inp:
   while len(pcm:=inp.read(65536,dtype='int16',always_2d=True)):
    h.update(pcm.astype('<i2',copy=False).tobytes());total+=len(pcm)
+   progress(.25+.15*total/info.frames)
  check(total==info.frames,'Input changed during encoding.')
  with tempfile.TemporaryDirectory(prefix='XtraTrax-mp3-') as tmp:
   mp3=Path(direct_mp3) if direct_mp3 else Path(tmp)/'encoded.mp3'
@@ -74,7 +83,9 @@ def encode_compressed(track,dest,*,direct_mp3=None,protect_peak=False):
   if protect_peak:
    encoded,post=mp3_encoder.encode_protected(path,mp3);check(encoded==total,'Input changed during encoding.')
   elif not direct_mp3:check(mp3_encoder.encode(path,mp3)==total,'Input changed during encoding.')
-  ea_layer3.write(mp3,dest,total)
+  progress(.6)
+  ea_layer3.write(mp3,dest,total,progress=lambda v:progress(.6+.39*v))
+ progress(1)
  result=dict(title=track['title'],artist=track['artist'],album=track['album'],frames=total,key=h.hexdigest(),stream=str(dest))
  if post is not None:result['post_encoding']=post
  return result
@@ -206,7 +217,7 @@ def build(game,tracks,output,progress=lambda s:None,*,wide_banners=False):
   temp=Path(temp);records=[]
   minimum_size=(game/'SDATA/sdat.viv').stat().st_size
   for i,t in enumerate(tracks):
-   progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(encode(t,temp/f'{i}.asf'))
+   progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(encode(t,temp/f'{i}.asf',progress=track_progress(progress)))
    minimum_size+=(temp/f'{i}.asf').stat().st_size;check_soundtrack_size(minimum_size)
   check(len({r['key'] for r in records})==len(records),'Duplicate audio in the queue. Keep one copy so preferences remain unambiguous.')
   archive=game/'SDATA/sdat.viv';entries=directory(archive);lookup={n:(o,z) for n,o,z in entries}

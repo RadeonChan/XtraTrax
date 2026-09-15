@@ -42,7 +42,7 @@ def build(game,tracks,output,progress,*,wide_banners=False):
   temp=Path(tmp);records=[]
   minimum_size=(game/'PFDATA/MusicSFx.mus').stat().st_size
   for i,t in enumerate(tracks):
-   progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(p.encode(t,temp/f'{i}.asf'))
+   progress(f'Encoding {i+1}/{len(tracks)}: {t["title"]}');records.append(p.encode(t,temp/f'{i}.asf',progress=p.track_progress(progress)))
    minimum_size+=(temp/f'{i}.asf').stat().st_size;p.check_soundtrack_size(minimum_size)
   p.check(len({r['key'] for r in records})==len(records),'Duplicate audio in the queue. Keep one copy so preferences remain unambiguous.')
   source=game/'PFDATA/MusicSFx.mus'

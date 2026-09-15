@@ -72,7 +72,7 @@ def field(k,v):
  return bytes([k,len(b)])+b
 def block(tag,b):
  b+=b'\0'*(-len(b)%4);return tag+struct.pack('<I',len(b)+8)+b
-def write(path,dest,samples):
+def write(path,dest,samples,progress=lambda value:None):
  if not 0<samples<=44100*60*30:raise ValueError('Track must be between one sample and 30 minutes.')
  count=0;remaining=samples
  packets=iter(frames(path));initial=[]
@@ -92,6 +92,7 @@ def write(path,dest,samples):
    n=min(len(group)*1152-1105 if count==0 else 1152,remaining)
    if n:
     f.write(block(b'SCDl',struct.pack('<III',n,0,1)+payload));remaining-=n;count+=1
+    progress((samples-remaining)/samples)
   if remaining or not count:raise ValueError('MP3 contains insufficient audio.')
   f.write(block(b'SCEl',b''));f.seek(count_pos);f.write(block(b'SCCl',struct.pack('<I',count)))
  return dict(samples=samples,packets=count,bytes=Path(dest).stat().st_size)

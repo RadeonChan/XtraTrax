@@ -30,14 +30,14 @@ def inspect(path):
   raise ValueError(f'{path.name}: unable to read audio; the file may be damaged or protected.') from e
 
 @contextmanager
-def prepared(path, *, floating=False):
+def prepared(path, *, floating=False, progress=lambda value:None):
  """Keep supported original PCM byte-exact; otherwise decode to bounded temp PCM."""
- path=Path(path);inspect(path)
+ path=Path(path);metadata=inspect(path)
  if path.suffix.lower() in ('.wav','.flac'):
   info=sf.info(str(path))
   if (info.samplerate,info.channels,info.subtype)==(44100,2,'PCM_16'):
    if not 0<info.frames<=MAX_FRAMES:raise ValueError('Track must contain audio and be no longer than 30 minutes.')
-   yield path;return
+   progress(1);yield path;return
  with tempfile.TemporaryDirectory(prefix='XtraTrax-audio-') as tmp:
   output=Path(tmp)/'converted.wav';total=0
   try:
@@ -51,6 +51,7 @@ def prepared(path, *, floating=False):
      total+=len(pcm)
      if total>MAX_FRAMES:raise ValueError('Track must be no longer than 30 minutes.')
      dest.write(pcm)
+     if metadata.frames:progress(min(.99,total/(metadata.frames*44100/metadata.samplerate)))
     for frame in source.decode(stream):
      frame.pts=None
      for converted in converter.resample(frame):write(converted)
@@ -58,4 +59,5 @@ def prepared(path, *, floating=False):
    if not total:raise ValueError('Track contains no decodable audio.')
   except av.FFmpegError as e:
    raise ValueError(f'{path.name}: audio conversion failed; the file may be damaged or protected.') from e
+  progress(1)
   yield output

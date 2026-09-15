@@ -161,7 +161,7 @@ def main():
  def work(fn,done):
   if state['busy']:return
   state['busy']=True
-  progress_bar.set('busy')
+  progress_bar.set('busy');track_bar.set('busy')
   for b in buttons:b.state(['disabled'])
   def runner():
    try:result=fn();messages.put(('done',done,result))
@@ -183,6 +183,8 @@ def main():
   if workflow.has_installation(gamepath) and not confirm_replace():return
   snapshot=[dict(x,normalize=normalize.get(),limiting=normalize.get()) for x in tracks];wide=wide_banners.get()
   def progress(text):
+   if text.startswith('Track progress: '):
+    messages.put(('track',int(text.split(': ')[1])/100));return
    match=__import__('re').match(r'Encoding (\d+)/(\d+): (.*)',text)
    fraction=None
    if match:
@@ -195,6 +197,9 @@ def main():
  row=ttk.Frame(frame);row.pack(fill='x',pady=12)
  for text,fn in [(ui(19),apply),(ui(20),restore)]:
   b=ttk.Button(row,text=text,command=fn);b.pack(side='left',padx=(0,8));buttons.append(b)
+ ttk.Label(frame,text='Current track').pack(anchor='w')
+ track_bar=GlassProgress(frame);track_bar.pack(fill='x',pady=(2,6))
+ ttk.Label(frame,text='Total - track preparation, then installation').pack(anchor='w')
  progress_bar=GlassProgress(frame);progress_bar.pack(fill='x',pady=(0,4))
  status_label=ttk.Label(frame,textvariable=status,wraplength=790)
  def show_status(*_):
@@ -207,12 +212,14 @@ def main():
    if item[0]=='detected':
     if item[1]==detection['generation']:detected.set(item[2])
     continue
+   if item[0]=='track':track_bar.set('progress',item[1]);continue
    if item[0]=='status':
+    track_bar.set('idle' if item[2] is not None else 'progress',0 if item[2] is not None else 1)
     status.set(item[1]);progress_bar.set('busy' if item[2] is None else 'progress',item[2] or 0);continue
    state['busy']=False
    for b in buttons:b.state(['!disabled'])
-   if item[0]=='done':progress_bar.set('progress',1);item[1](item[2])
-   else:progress_bar.set('idle');status.set(ui(35).format(error=item[1]));messagebox.showerror(ui(1),item[1])
+   if item[0]=='done':track_bar.set('progress',1);progress_bar.set('progress',1);item[1](item[2])
+   else:track_bar.set('idle');progress_bar.set('idle');status.set(ui(35).format(error=item[1]));messagebox.showerror(ui(1),item[1])
   window.after(100,poll)
  def close():
   if state['busy']:messagebox.showinfo(ui(36),ui(37))
